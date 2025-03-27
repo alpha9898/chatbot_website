@@ -2,18 +2,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mobile menu functionality
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const sidebar = document.querySelector('.sidebar');
+    const chatContainer = document.querySelector('.chat-container');
     
-    mobileMenuBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('show');
+    let isSidebarVisible = false;
+    
+    mobileMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        isSidebarVisible = !isSidebarVisible;
+        sidebar.style.display = isSidebarVisible ? 'block' : 'none';
+        mobileMenuBtn.innerHTML = isSidebarVisible ? 
+            '<i class="fas fa-times"></i>' : 
+            '<i class="fas fa-bars"></i>';
     });
 
-    // Close sidebar when clicking outside on mobile
+    // Close sidebar when clicking outside
     document.addEventListener('click', (e) => {
         if (window.innerWidth <= 768 && 
+            isSidebarVisible && 
             !e.target.closest('.sidebar') && 
-            !e.target.closest('.mobile-menu-btn') && 
-            sidebar.classList.contains('show')) {
-            sidebar.classList.remove('show');
+            !e.target.closest('.mobile-menu-btn')) {
+            isSidebarVisible = false;
+            sidebar.style.display = 'none';
+            mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
         }
     });
 
@@ -21,8 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', () => {
         if (window.innerWidth > 768) {
             sidebar.style.display = 'block';
+            isSidebarVisible = true;
         } else {
-            sidebar.style.display = sidebar.classList.contains('show') ? 'block' : 'none';
+            sidebar.style.display = isSidebarVisible ? 'block' : 'none';
         }
     });
 
