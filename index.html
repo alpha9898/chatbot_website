@@ -3,45 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedFit Chatbot - Your Health & Fitness Assistant</title>
+    <title>Health and Fitness Chatbot</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1><i class="fas fa-heartbeat"></i> MedFit Chatbot</h1>
-            <p>Your personal health and fitness assistant</p>
-        </header>
-
-        <main>
-            <div class="chat-container">
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message bot">
-                        <div class="message-content">
-                            Hello! I'm your MedFit assistant. I can help you with:
-                            <ul>
-                                <li>Medical information and advice</li>
-                                <li>Fitness tips and workout plans</li>
-                                <li>Nutrition guidance</li>
-                                <li>Health-related questions</li>
-                            </ul>
-                            How can I assist you today?
-                        </div>
+        <!-- Sidebar for chat history -->
+        <div class="sidebar">
+            <button id="newChatBtn" class="new-chat-btn">
+                <i class="fas fa-plus"></i> New Chat
+            </button>
+            <div class="chat-history">
+                <div class="chat-history-header">
+                    <div class="header-left">
+                        <h3>Chat History</h3>
+                        <span class="chat-counter">0 chats</span>
                     </div>
+                    <button id="clearAllBtn" class="clear-all-btn">
+                        <i class="fas fa-trash-alt"></i> Clear All
+                    </button>
                 </div>
-                <div class="chat-input">
-                    <input type="text" id="userInput" placeholder="Type your health or fitness question here...">
-                    <button id="sendButton">
-                        <i class="fas fa-paper-plane"></i>
+                <div id="chatList"></div>
+            </div>
+        </div>
+        
+        <!-- Main chat area -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="header-content">
+                    <div class="current-chat-info">
+                        <span class="chat-status"></span>
+                        <h1>Health & Fitness Assistant</h1>
+                    </div>
+                    <button id="darkModeToggle" class="dark-mode-toggle">
+                        <i class="fas fa-moon"></i>
                     </button>
                 </div>
             </div>
-        </main>
-
-        <footer>
-            <p>Disclaimer: This chatbot provides general information only. Always consult healthcare professionals for medical advice.</p>
-        </footer>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <div class="message-content">
+                        Hello! I'm your MedFit assistant. I can help you with:
+                        <ul>
+                            <li>Medical information and advice</li>
+                            <li>Fitness tips and workout plans</li>
+                            <li>Nutrition guidance</li>
+                            <li>Health-related questions</li>
+                        </ul>
+                        How can I assist you today?
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <textarea id="userInput" placeholder="Ask about exercises, nutrition, or fitness advice..."></textarea>
+                <button id="sendButton">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
     </div>
     <script src="config.js"></script>
     <script src="script.js"></script>
