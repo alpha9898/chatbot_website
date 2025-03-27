@@ -1,4 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Dark mode functionality
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    
+    // Set initial dark mode state
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+    
+    // Toggle dark mode
+    darkModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+        darkModeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    });
+
+    // Add Clear All button event listener
+    const clearAllBtn = document.getElementById('clearAllBtn');
+    clearAllBtn.addEventListener('click', clearAllChats);
+
     // First check if config is loaded properly
     if (typeof config === 'undefined') {
         console.error('Configuration not loaded! Make sure config.js is properly included.');
@@ -9,6 +31,185 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatMessages = document.getElementById('chatMessages');
     const userInput = document.getElementById('userInput');
     const sendButton = document.getElementById('sendButton');
+
+    // Chat history management
+    let chats = JSON.parse(localStorage.getItem('chats')) || [];
+    let currentChatId = null;
+
+    // Update chat counter
+    function updateChatCounter() {
+        const counter = document.querySelector('.chat-counter');
+        counter.textContent = `${chats.length} chat${chats.length !== 1 ? 's' : ''}`;
+    }
+
+    // Initialize chat history
+    function initializeChatHistory() {
+        const chatList = document.getElementById('chatList');
+        chatList.innerHTML = '';
+        
+        chats.forEach(chat => {
+            const chatItem = createChatItem(chat);
+            chatList.appendChild(chatItem);
+        });
+
+        updateChatCounter();
+    }
+
+    // Create a new chat item
+    function createChatItem(chat) {
+        const div = document.createElement('div');
+        div.className = `chat-item ${chat.id === currentChatId ? 'active' : ''}`;
+        
+        const title = document.createElement('span');
+        title.textContent = chat.title || 'New Chat';
+        
+        const deleteBtn = document.createElement('span');
+        deleteBtn.className = 'delete-chat';
+        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+        
+        div.appendChild(title);
+        div.appendChild(deleteBtn);
+        
+        div.addEventListener('click', (e) => {
+            if (!e.target.closest('.delete-chat')) {
+                loadChat(chat.id);
+            }
+        });
+        
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteChat(chat.id);
+        });
+        
+        return div;
+    }
+
+    // Create a new chat
+    function createNewChat() {
+        const chat = {
+            id: Date.now(),
+            title: 'New Chat',
+            messages: []
+        };
+        
+        chats.push(chat);
+        currentChatId = chat.id;
+        localStorage.setItem('chats', JSON.stringify(chats));
+        
+        const chatList = document.getElementById('chatList');
+        chatList.appendChild(createChatItem(chat));
+        
+        // Clear messages and add welcome message
+        const chatMessages = document.getElementById('chatMessages');
+        chatMessages.innerHTML = '';
+        addMessage("Hi! I can help with:\n" +
+                  "• Exercise info\n" +
+                  "• Nutrition facts\n" +
+                  "• Fitness tips\n\n" +
+                  "Try asking about exercises or food!", false);
+
+        updateChatCounter();
+    }
+
+    // Load a specific chat
+    function loadChat(chatId) {
+        // Don't reload if clicking the same chat
+        if (currentChatId === chatId) {
+            return;
+        }
+        
+        currentChatId = chatId;
+        const chat = chats.find(c => c.id === chatId);
+        
+        if (chat) {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '';
+            chat.messages.forEach(msg => {
+                addMessage(msg.text, msg.type === 'user');
+            });
+            
+            // Update active state in chat list
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.chatId === chatId.toString()) {
+                    item.classList.add('active');
+                }
+            });
+        }
+    }
+
+    // Delete a chat
+    function deleteChat(chatId) {
+        if (confirm('Are you sure you want to delete this chat?')) {
+            chats = chats.filter(chat => chat.id !== chatId);
+            localStorage.setItem('chats', JSON.stringify(chats));
+            
+            // Clear the chat list
+            const chatList = document.getElementById('chatList');
+            chatList.innerHTML = '';
+            
+            if (chats.length === 0) {
+                // If no chats left, create a new one
+                createNewChat();
+            } else {
+                // If there are other chats, load the most recent one
+                currentChatId = chats[chats.length - 1].id;
+                loadChat(currentChatId);
+                // Rebuild the chat list
+                chats.forEach(chat => {
+                    chatList.appendChild(createChatItem(chat));
+                });
+            }
+
+            updateChatCounter();
+        }
+    }
+
+    // Clear all chats
+    function clearAllChats() {
+        if (confirm('Are you sure you want to delete all chats? This cannot be undone.')) {
+            // Clear chats array and localStorage
+            chats = [];
+            localStorage.setItem('chats', JSON.stringify(chats));
+            
+            // Clear the chat list UI
+            const chatList = document.getElementById('chatList');
+            chatList.innerHTML = '';
+            
+            // Clear current messages
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '';
+            
+            // Create a new chat
+            createNewChat();
+            
+            // Update the counter
+            updateChatCounter();
+        }
+    }
+
+    // Update chat title
+    function updateChatTitle(message) {
+        if (!currentChatId) return;
+        
+        const chat = chats.find(c => c.id === currentChatId);
+        if (chat && chat.title === 'New Chat') {
+            chat.title = message.slice(0, 30) + (message.length > 30 ? '...' : '');
+            localStorage.setItem('chats', JSON.stringify(chats));
+            initializeChatHistory();
+        }
+    }
+
+    // Save message to current chat
+    function saveMessage(message, type) {
+        if (!currentChatId) return;
+        
+        const chat = chats.find(c => c.id === currentChatId);
+        if (chat) {
+            chat.messages.push({ text: message, type });
+            localStorage.setItem('chats', JSON.stringify(chats));
+        }
+    }
 
     // Function to add a message to the chat
     function addMessage(content, isUser = false) {
@@ -24,6 +225,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Scroll to bottom
         chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        if (isUser) {
+            updateChatTitle(content);
+        }
+        saveMessage(content, isUser ? 'user' : 'bot');
     }
 
     // Function to get chat response
@@ -195,12 +401,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initial welcome message
-    addMessage("Hi! I can help with:\n" +
-              "• Exercise info\n" +
-              "• Nutrition facts\n" +
-              "• Fitness tips\n\n" +
-              "Try asking about exercises or food!");
+    // Initialize chat history
+    initializeChatHistory();
+    
+    // Create new chat if no chats exist
+    if (chats.length === 0) {
+        createNewChat();
+    } else {
+        // Load the most recent chat
+        loadChat(chats[chats.length - 1].id);
+    }
+    
+    // New chat button
+    document.getElementById('newChatBtn').addEventListener('click', createNewChat);
 
     // Log when the script is loaded
     console.log('Chat script loaded successfully');
