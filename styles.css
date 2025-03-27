@@ -494,4 +494,128 @@ body.dark-mode {
 
 .clear-all-btn i {
     font-size: 0.9em;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        margin: 0;
+        height: 100vh;
+        border-radius: 0;
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 0;
+        padding: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+
+    .sidebar.active {
+        max-height: 60vh;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .chat-container {
+        height: 100vh;
+    }
+
+    .chat-header {
+        position: relative;
+    }
+
+    .header-content {
+        position: relative;
+    }
+
+    /* Add menu button for mobile */
+    .menu-toggle {
+        display: block;
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--text-color);
+        font-size: 1.2em;
+        cursor: pointer;
+        padding: 5px;
+        z-index: 2;
+    }
+
+    .chat-header h1 {
+        font-size: 1.2em;
+        margin: 0 auto;
+    }
+
+    .chat-messages {
+        height: calc(100vh - 140px);
+    }
+
+    .message-content {
+        max-width: 85%;
+        font-size: 0.95em;
+    }
+
+    .chat-input-container {
+        padding: 12px;
+    }
+
+    #userInput {
+        height: 45px;
+        padding: 12px 15px;
+        font-size: 0.95em;
+    }
+
+    #sendButton {
+        width: 45px;
+        height: 45px;
+    }
+
+    .new-chat-btn {
+        padding: 10px;
+        font-size: 0.95em;
+    }
+
+    .chat-item {
+        padding: 8px 10px;
+        margin-bottom: 4px;
+    }
+
+    .chat-counter {
+        font-size: 0.8em;
+    }
+
+    .clear-all-btn {
+        padding: 5px 8px;
+        font-size: 0.8em;
+    }
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 480px) {
+    .message-content {
+        max-width: 90%;
+        font-size: 0.9em;
+        padding: 10px 12px;
+    }
+
+    .chat-header h1 {
+        font-size: 1.1em;
+    }
+
+    .dark-mode-toggle {
+        width: 35px;
+        height: 35px;
+    }
+}
+
+/* Hide menu button on desktop */
+.menu-toggle {
+    display: none;
 } 
