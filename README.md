@@ -1,22 +1,35 @@
-# MedFit Chatbot Website
+# Health and Fitness Chatbot
 
-A modern web-based chatbot focused on providing medical and fitness information using the Llama model API.
+A simple web-based chatbot that provides information about exercises, nutrition, and general fitness advice.
 
 ## Features
+- Exercise information and workout suggestions
+- Nutrition facts for different foods
+- General fitness and diet guidance
+- Clean and responsive interface
 
-- Clean and modern user interface
-- Real-time chat functionality
-- Medical and fitness-focused responses
-- Mobile-responsive design
-- Easy-to-use interface
+## Setup for GitHub Pages
 
-## Setup Instructions
+1. Fork this repository
+2. Go to your repository's Settings
+3. Scroll down to "GitHub Pages" section
+4. Under "Source", select "main" branch
+5. Click "Save"
 
-1. Clone this repository to your local machine
-2. Open `config.js` and replace the following values:
-   - `YOUR_API_KEY_HERE` with your Llama API key
-   - `YOUR_LLAMA_API_ENDPOINT` with your Llama API endpoint URL
-3. Open `index.html` in your web browser
+Your site will be available at: `https://[your-username].github.io/[repository-name]`
+
+## Local Development
+
+1. Clone the repository:
+```bash
+git clone https://github.com/[your-username]/[repository-name].git
+```
+
+2. Open `index.html` in your browser
+
+## Note
+- Make sure to update the API keys in `config.js` with your own keys
+- The chatbot uses Together AI for chat responses and API Ninjas for exercise and nutrition data
 
 ## Important Security Notes
 
