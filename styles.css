@@ -121,6 +121,43 @@ header p {
     color: var(--text-color);
 }
 
+/* Enhanced markdown formatting styles */
+.message-content strong {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.message-content em {
+    font-style: italic;
+    color: var(--text-color);
+}
+
+.message-content ul {
+    margin: 10px 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.message-content ul li {
+    margin: 6px 0;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.6;
+}
+
+.message-content ul li:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--button-bg);
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.message-content br {
+    line-height: 1.8;
+}
+
 .chat-input-container {
     padding: 20px;
     background: var(--sidebar-bg);

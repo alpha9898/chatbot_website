@@ -250,13 +250,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to add a message to the chat
+    // Function to render markdown-like formatting
+    function renderMarkdown(text) {
+        let html = text;
+        
+        // Convert **bold** to <strong>
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        // Convert *italic* to <em>
+        html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        
+        // Convert line breaks to <br>
+        html = html.replace(/\n/g, '<br>');
+        
+        // Convert bullet points (*, +, -) to proper HTML lists
+        html = html.replace(/^[\s]*[\*\+\-]\s(.+)$/gm, '<li>$1</li>');
+        
+        // Wrap consecutive <li> elements in <ul>
+        html = html.replace(/(<li>.*<\/li>)/gs, function(match) {
+            return '<ul>' + match + '</ul>';
+        });
+        
+        // Fix nested ul tags
+        html = html.replace(/<\/ul>\s*<ul>/g, '');
+        
+        return html;
+    }
+
     function addMessage(content, isUser = false) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
         
         const messageContent = document.createElement('div');
         messageContent.className = 'message-content';
-        messageContent.innerHTML = content;
+        
+        // Apply markdown rendering for bot messages
+        if (!isUser) {
+            messageContent.innerHTML = renderMarkdown(content);
+        } else {
+            messageContent.innerHTML = content;
+        }
         
         messageDiv.appendChild(messageContent);
         chatMessages.appendChild(messageDiv);
@@ -284,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     messages: [
                         {
                             role: "system",
-                            content: "You are a concise health and fitness assistant. Follow these rules:\n1. Keep responses short and to the point\n2. Use bullet points for lists\n3. Limit to 2-3 main points\n4. Be direct and clear"
+                            content: "You are a helpful health and fitness assistant. Provide clear, informative responses that are detailed enough to be useful but not overly long. Include key points and practical advice. Use bullet points when appropriate for better readability."
                         },
                         {
                             role: "user",
@@ -292,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     ],
                     temperature: 0.7,
-                    max_tokens: 400
+                    max_tokens: 700
                 })
             });
 
